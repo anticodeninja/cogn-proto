@@ -1,4 +1,5 @@
 *.suo
+*.DotSettings
 packages
 obj/
 bin/

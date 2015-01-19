@@ -1,20 +1,16 @@
 ﻿setViewPort(1600, 400, 90, 1);
-// SetParam 0 187 240 240 192 144 96 48
-
-setParams([1]);
-setThresholds([60, 75, 90, 100]);
-setDates(["05.10.2013", "09.11.2013", "14.12.2013"]);
-
-setColors([
-    { p: "BackwardDiagonal", m: "#000000", s: "#ffffff" },
-    { p: "Horizontal", m: "#000000", s: "#ffffff" },
-    { p: "ForwardDiagonal", m: "#000000", s: "#ffffff" }
-]);
+setTitles({
+    passingTestDate: "Дата прохождения теста",
+    scorePerTest: "Количество баллов за тест"
+});
+setBlackRoundMode(2);
 setAdditionalsParam([
     { t: "Кол-во долгов за прошлый семестр", c: "#000", w: 4, p: [1] },
     { t: "Уровень посещаемости занятий", c: "#000", w:4, p: [3, 1, 1, 1] }
 ]);
 
+setThresholds([60, 75, 90, 100]);
+setDates(["05.10.2013", "09.11.2013", "14.12.2013"]);
 addStudent({
     n: "Смирнов В.В.",
     a: "18 лет",

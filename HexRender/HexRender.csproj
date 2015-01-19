@@ -75,6 +75,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="tests\menu.bat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -86,11 +87,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="default.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="tests\black-round.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\black-pie.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\color-pie.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\color-round.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)tests/*" "$(TargetDir)" /E /I /F /Y
+copy "$(TargetDir)/black-round.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
