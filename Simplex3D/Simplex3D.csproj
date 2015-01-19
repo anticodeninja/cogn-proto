@@ -45,6 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Primitives\Edge.cs" />
+    <Compile Include="Primitives\Figure.cs" />
+    <Compile Include="Primitives\Matrix.cs" />
+    <Compile Include="Primitives\Point.cs" />
     <Compile Include="Render.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +67,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Render.resx">
+      <DependentUpon>Render.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -72,11 +79,31 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="tests\menu.bat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{a329b910-429e-489b-ac36-0d172bfc197b}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tests\color-mpath.js" />
+    <Content Include="tests\color-path.js" />
+    <Content Include="tests\color-ijk.js" />
+    <Content Include="tests\black-ijk.js" />
+    <Content Include="tests\black-path.js" />
+    <Content Include="tests\black-mpath.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)tests/*" "$(TargetDir)" /E /I /F /Y
+copy "$(TargetDir)/color-path.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

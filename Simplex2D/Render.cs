@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Simplex2D
+﻿namespace Simplex2D
 {
+    using System.Windows.Forms;
+    using Library;
+
     public partial class Render : Form
     {
-        public Render()
+        public Render(string inputFile)
         {
             InitializeComponent();
+
+            var parser = new Parser(inputFile);
+            //InitializeParser(parser);
+            Shown += (sender, args) => parser.Start();
         }
     }
 }

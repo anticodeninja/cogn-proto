@@ -38,16 +38,17 @@
             this.renderPanel.Location = new System.Drawing.Point(0, 0);
             this.renderPanel.Margin = new System.Windows.Forms.Padding(0);
             this.renderPanel.Name = "renderPanel";
-            this.renderPanel.Size = new System.Drawing.Size(191, 79);
+            this.renderPanel.Size = new System.Drawing.Size(500, 500);
             this.renderPanel.TabIndex = 0;
-            this.renderPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.renderPanel_Paint);
             // 
             // Render
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(191, 79);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(500, 500);
             this.Controls.Add(this.renderPanel);
+            this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Render";
             this.Text = "HexRender";
             this.ResumeLayout(false);

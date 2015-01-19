@@ -52,6 +52,8 @@
             var parser = new Parser(inputFile);
             InitializeParser(parser);
             Shown += (sender, args) => parser.Start();
+
+            renderPanel.Paint += (sender, args) => RenderPicture(args.Graphics);
         }
 
         private void InitializeParser(Parser parser)
@@ -198,10 +200,8 @@
             return new SolidBrush(Color.White);
         }
 
-        private void renderPanel_Paint(object sender, PaintEventArgs e)
+        private void RenderPicture(Graphics g)
         {
-            var g = e.Graphics;
-
             var angleOffset = -Math.PI / 2;
             var anglePerStudent = Math.PI * 2 / _students.Count;
             var center = new Point(_width / 2, _height / 2);

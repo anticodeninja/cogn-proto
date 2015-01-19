@@ -13,7 +13,6 @@
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
             Application.Run(new Render(args.Length < 1 ? "default.js" : args[0]));
         }
     }
