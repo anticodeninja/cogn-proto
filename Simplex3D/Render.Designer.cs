@@ -48,7 +48,7 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Render";
-            this.Text = "3D Simplex";
+            this.Text = "Simplex3D";
             this.ResumeLayout(false);
 
         }

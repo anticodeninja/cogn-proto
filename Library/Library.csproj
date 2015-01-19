@@ -47,6 +47,8 @@
     <Compile Include="HSLColor.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="PointDrawer.cs" />
+    <Compile Include="PointType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

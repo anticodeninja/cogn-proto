@@ -45,6 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Primitivies\Edge.cs" />
+    <Compile Include="Primitivies\Figure.cs" />
+    <Compile Include="Primitivies\Matrix.cs" />
+    <Compile Include="Primitivies\Point.cs" />
     <Compile Include="Render.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +67,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Render.resx">
+      <DependentUpon>Render.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -72,6 +79,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="tests\menu.bat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -82,10 +90,23 @@
       <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="tests\" />
+    <Content Include="tests\black-ijk-t0.js" />
+    <Content Include="tests\black-mpath-t0.js" />
+    <Content Include="tests\black-path-t0.js" />
+    <Content Include="tests\color-ijk-t0.js" />
+    <Content Include="tests\color-mpath-t0.js" />
+    <Content Include="tests\color-path-t2.js" />
+    <Content Include="tests\color-path-t1.js" />
+    <Content Include="tests\color-path-t0-oneview.js" />
+    <Content Include="tests\color-path-t0.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)tests/*" "$(TargetDir)" /E /I /F /Y
+copy "$(TargetDir)/color-path-t2.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

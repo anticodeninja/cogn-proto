@@ -1,17 +1,11 @@
-﻿namespace Simplex3D.Primitives
+﻿using Library;
+
+namespace Simplex3D.Primitives
 {
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
-
-    public enum PointType
-    {
-        TriangleUp,
-        TriangleDown,
-        Circle,
-        Square,
-    }
 
     public class Figure
     {
@@ -277,45 +271,8 @@
                                 (float) (dX + _renderPoints[t.P[0]].X), (float) (dY - _renderPoints[t.P[0]].Y),
                                 (float) (dX + _renderPoints[t.P[1]].X), (float) (dY - _renderPoints[t.P[1]].Y));
                 } else {
-                    var ox = (float)(dX + _renderPoints[t.P[0]].X);
-                    var oy = (float)(dY - _renderPoints[t.P[0]].Y);
-                    var ow = (float) (Width/2);
-
-                    switch (_pointType)
-                    {
-                        case PointType.TriangleUp:
-                            var triangleUp = new[]
-                            {
-                                new PointF(ox - ow, oy + ow),
-                                new PointF(ox + ow, oy + ow),
-                                new PointF(ox, oy - ow)
-                            };
-                            dc.FillPolygon(new SolidBrush(t.C), triangleUp);
-                            dc.DrawPolygon(new Pen(Color.Black, 1), triangleUp);
-                            break;
-
-                        case PointType.TriangleDown:
-                            var triangleDown = new[]
-                            {
-                                new PointF(ox - ow, oy - ow),
-                                new PointF(ox + ow, oy - ow),
-                                new PointF(ox, oy + ow)
-                            };
-                            dc.FillPolygon(new SolidBrush(t.C), triangleDown);
-                            dc.DrawPolygon(new Pen(Color.Black, 1), triangleDown);
-                            break;
-
-                        case PointType.Circle:
-                            dc.FillEllipse(new SolidBrush(t.C), ox - ow, oy - ow, 2 * ow, 2 * ow);
-                            dc.DrawEllipse(new Pen(Color.Black, 1), ox - ow, oy - ow, 2 * ow, 2 * ow);
-                            break;
-                        case PointType.Square:
-                            dc.FillRectangle(new SolidBrush(t.C), ox - ow, oy - ow, 2 * ow, 2 * ow);
-                            dc.DrawRectangle(new Pen(Color.Black, 1), ox - ow, oy - ow, 2 * ow, 2 * ow);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    PointDrawer.DrawPoint(dc, _pointType, t.C, (float)Width,
+                        (float)(dX + _renderPoints[t.P[0]].X), (float)(dY - _renderPoints[t.P[0]].Y));
                 }
             }
         }

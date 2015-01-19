@@ -114,10 +114,10 @@
 
         private void RenderPicture(Graphics g)
         {
-            for (var i = 0; i < _mainFigures.Count; ++i)
+            foreach (var figure in _mainFigures)
             {
-                _mainFigures[i].SetTransform(_transformMatrix);
-                _mainFigures[i].Render(g);
+                figure.SetTransform(_transformMatrix);
+                figure.Render(g);
             }
         }
 
