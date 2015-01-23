@@ -55,6 +55,7 @@
     <Compile Include="Geometry\PointAbstract.cs" />
     <Compile Include="Geometry\Point2D.cs" />
     <Compile Include="Geometry\Point3D.cs" />
+    <Compile Include="Graphics\ColorMix.cs" />
     <Compile Include="Graphics\HSLColor.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Parser.cs" />

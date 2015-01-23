@@ -42,11 +42,12 @@
 
             parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
                 (color, width, pattern, size, point, colors) =>
-                    AddFigure(a=>FigureFactory2D.CreateIjk(
-                    size, a,
-                    width, ColorTranslator.FromHtml(color),
-                    colors.Select(c => ColorTranslator.FromHtml((string)c)).ToArray(),
-                    ParsePattern(pattern)), ParseValue(point))));
+                    AddFigure((a, c) => FigureFactory2D.CreateIjk(
+                        size, a,
+                        width, ColorTranslator.FromHtml(color),
+                        c,
+                        ParsePattern(pattern)), ParseValue(point),
+                        colors.Select(c => ColorTranslator.FromHtml((string) c)).ToArray())));
 
             parser.Add("addVector", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, point) =>
@@ -119,14 +120,21 @@
 
         private void AddFigure(Func<double[], Figure<Point2D, Matrix2D>> create, double[] h)
         {
-            var transformed = _transform.SimplexTransform(h);
+            var transformed = _transform.Transform(h);
             _mainFigures.Add(Enumerable.Range(0, 4).Select(a=>create(transformed[a])).ToArray());
+        }
+
+        private void AddFigure(Func<double[], Color[], Figure<Point2D, Matrix2D>> create, double[] h, Color[] c)
+        {
+            var transformed = _transform.Transform(h);
+            var colors = _transform.Transform(c);
+            _mainFigures.Add(Enumerable.Range(0, 4).Select(a=>create(transformed[a], colors[a])).ToArray());
         }
 
         private void AddFigure(Func<double[], double[], Figure<Point2D, Matrix2D>> create, double[] h1, double[] h2)
         {
-            var transformed1 = _transform.SimplexTransform(h1);
-            var transformed2 = _transform.SimplexTransform(h2);
+            var transformed1 = _transform.Transform(h1);
+            var transformed2 = _transform.Transform(h2);
             _mainFigures.Add(Enumerable.Range(0, 4).Select(a=>create(transformed1[a], transformed2[a])).ToArray());
         }
 

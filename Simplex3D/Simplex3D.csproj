@@ -88,6 +88,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="tests\color-all.js" />
     <Content Include="tests\color-mpath.js" />
     <Content Include="tests\color-path.js" />
     <Content Include="tests\color-ijk.js" />
@@ -98,7 +99,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)tests/*" "$(TargetDir)" /E /I /F /Y
-copy "$(TargetDir)/color-path.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
+copy "$(TargetDir)/color-all.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

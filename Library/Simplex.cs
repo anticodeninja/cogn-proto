@@ -3,177 +3,141 @@
     using System;
     using System.Linq;
 
-    class Simplex
+    internal class Simplex
     {
         public static double[] SimplexToCoord(double[] h)
         {
+            double[][] angle;
+
             switch (h.Length)
             {
                 case 3:
-                    return Simplex2ToCoord(h);
+                    angle = new[]
+                    {
+                        new[] {-Math.PI/3.0},
+                        new[] {Math.PI}
+                    };
+                    break;
                 case 4:
-                    return Simplex3ToCoord(h);
+                    angle = new[]
+                    {
+                        new[] {Math.PI - Math.Acos(Math.Sqrt(2.0/3.0)), 0.0},
+                        new[] {Math.PI/2, Math.PI*5/6},
+                        new[] {Math.PI/2, -Math.PI/2}
+                    };
+                    break;
                 default:
-                    return null;
+                    throw new ArgumentException("Incorrect dimensions");
             }
-        }
-
-        private static double[] Simplex2ToCoord(double[] h)
-        {
-            var angle = new[] { Math.PI / 3.0, 0 };
-
-            var coord = new double[h.Length - 1];
-            for (var i = 0; i < h.Length - 1; ++i)
-            {
-                var length = h[i];
-
-                var newCoord = new double[h.Length - 1];
-                newCoord[0] = coord[0] + length * Math.Cos(angle[i]);
-                newCoord[1] = coord[1] + length * Math.Sin(angle[i]);
-                coord = newCoord;
-            }
-
-            coord[0] /= Math.Sin(Math.PI / 3);
-            coord[1] /= Math.Sin(Math.PI / 3);
-
-            coord[0] -= h.Sum() / Math.Sin(Math.PI / 3) / 2;
-            coord[1] -= h.Sum() / 3.0;
-
-            return coord;
-        }
-
-        private static double[] Simplex3ToCoord(double[] h)
-        {
-            var angle = new[,] {
-                {Math.PI - Math.Acos(Math.Sqrt(2.0/3.0)), 0.0},
-                {Math.PI / 2, Math.PI * 5 / 6},
-                {Math.PI / 2, -Math.PI / 2}
-            };
 
             var height = h.Sum();
             var coord = new double[h.Length - 1];
-            for (var i = 0; i < coord.Length; ++i)
+            for (var i = 0; i < h.Length - 1; ++i)
             {
                 height -= h[i];
-                var length = height / Math.Sqrt(2.0 / 3.0);
+                var length = height/Math.Cos(Math.PI/6);
 
                 var newCoord = new double[h.Length - 1];
-                newCoord[0] = coord[0] + length * Math.Sin(angle[i, 0]) * Math.Cos(angle[i, 1]);
-                newCoord[1] = coord[1] + length * Math.Cos(angle[i, 0]);
-                newCoord[2] = coord[2] + length * Math.Sin(angle[i, 0]) * Math.Sin(angle[i, 1]);
+                Transform(coord, newCoord, angle[i], length);
                 coord = newCoord;
             }
 
-            coord[1] += h.Sum() * 2.0 / 3.0;
+            coord[1] += h.Sum()*2.0/3.0;
 
             return coord;
         }
 
         public static double[][] SimplexToVector(double[] h)
         {
+            double[][] angle;
+
             switch (h.Length)
             {
                 case 3:
-                    return Simplex2ToVector(h);
+                    angle = new[]
+                    {
+                        new[] {-Math.PI/3.0},
+                        new[] {-Math.PI}
+                    };
+                    break;
                 case 4:
-                    return Simplex3ToVector(h);
+                    angle = new[]
+                    {
+                        new[] {Math.PI - Math.Acos(Math.Sqrt(2.0/3.0)), 0.0},
+                        new[] {Math.PI/2, Math.PI*5/6},
+                        new[] {Math.PI/2, -Math.PI/2}
+                    };
+                    break;
                 default:
-                    return null;
+                    throw new ArgumentException("Incorrect dimensions");
             }
-        }
 
-        private static double[][] Simplex3ToVector(double[] h)
-        {
-            var angle = new[,] {
-                {Math.PI - Math.Acos(Math.Sqrt(2.0/3.0)), 0.0},
-                {Math.PI / 2, Math.PI * 5 / 6},
-                {Math.PI / 2, -Math.PI / 2}
-            };
             var height = h.Sum();
 
-            var coord = CreateMatrix(4, h.Length - 1);
-            for (var i = 0; i < 3; ++i)
+            var coord = CreateMatrix(h.Length, h.Length - 1);
+            for (var i = 0; i < h.Length - 1; ++i)
             {
                 height -= h[i];
-                var length = height / Math.Sqrt(2.0 / 3.0);
+                var length = height/Math.Cos(Math.PI/6);
 
-                coord[i + 1][0] = coord[i][0] + length * Math.Sin(angle[i, 0]) * Math.Cos(angle[i, 1]);
-                coord[i + 1][1] = coord[i][1] + length * Math.Cos(angle[i, 0]);
-                coord[i + 1][2] = coord[i][2] + length * Math.Sin(angle[i, 0]) * Math.Sin(angle[i, 1]);
+                Transform(coord[i], coord[i + 1], angle[i], length);
             }
 
-            for (var i = 0; i < 4; ++i)
-                coord[i][1] += h.Sum() * 2.0 / 3.0;
-
-            return coord;
-        }
-
-        private static double[][] Simplex2ToVector(double[] h)
-        {
-            var angle = new[] { -Math.PI / 3.0, -Math.PI };
-            var height = h.Sum();
-
-            var coord = CreateMatrix(3, h.Length - 1);
-            for (var i = 0; i < 2; ++i)
-            {
-                height -= h[i];
-                var length = height / Math.Cos(Math.PI / 6);
-
-                coord[i + 1][0] = coord[i][0] + length * Math.Cos(angle[i]);
-                coord[i + 1][1] = coord[i][1] + length * Math.Sin(angle[i]);
-            }
-
-            for (var i = 0; i < 3; ++i)
-                coord[i][1] += h.Sum() * 2.0 / 3.0;
+            for (var i = 0; i < h.Length; ++i)
+                coord[i][1] += h.Sum()*2.0/3.0;
 
             return coord;
         }
 
         public static double[][] SimplexToMed(double[] h, double[] p)
         {
+            double[][] angle;
+
             switch (h.Length)
             {
                 case 3:
-                    return Simplex2ToMed(h, p);
+                    angle = new[]
+                    {
+                        new[] {-Math.PI/2},
+                        new[] {Math.PI*5/6},
+                        new[] {Math.PI/6}
+                    };
+                    break;
                 case 4:
-                    return Simplex3ToMed(h, p);
+                    angle = new[]
+                    {
+                        new[] {Math.PI, 0.0},
+                        new[] {Math.Atan(Math.Sqrt(2)), Math.PI},
+                        new[] {Math.Atan(Math.Sqrt(2)), -Math.PI/3},
+                        new[] {Math.Atan(Math.Sqrt(2)), Math.PI/3}
+                    };
+                    break;
                 default:
-                    return null;
+                    throw new ArgumentException("Incorrect dimensions");
             }
-        }
-
-        private static double[][] Simplex3ToMed(double[] h, double[] p)
-        {
-            var angle = new[,] {
-                {Math.PI, 0.0},
-                {Math.Atan(Math.Sqrt(2)), Math.PI},
-                {Math.Atan(Math.Sqrt(2)), -Math.PI / 3},
-                {Math.Atan(Math.Sqrt(2)), Math.PI / 3}
-            };
 
             var coord = CreateMatrix(h.Length, p.Length);
             for (var i = 0; i < h.Length; ++i)
             {
-                coord[i][0] = p[0] + h[i] * Math.Sin(angle[i, 0]) * Math.Cos(angle[i, 1]);
-                coord[i][1] = p[1] + h[i] * Math.Cos(angle[i, 0]);
-                coord[i][2] = p[2] + h[i] * Math.Sin(angle[i, 0]) * Math.Sin(angle[i, 1]);
+                Transform(p, coord[i], angle[i], h[i]);
             }
 
             return coord;
         }
 
-        private static double[][] Simplex2ToMed(double[] h, double[] p)
+        private static void Transform(double[] orig, double[] output, double[] angle, double length)
         {
-            var angle = new[] { -Math.PI / 2, Math.PI * 5 / 6, Math.PI / 6 };
-
-            var coord = CreateMatrix(h.Length, p.Length);
-            for (var i = 0; i < h.Length; ++i)
+            if (orig.Length == 2)
             {
-                coord[i][0] = p[0] + h[i] * Math.Cos(angle[i]);
-                coord[i][1] = p[1] + h[i] * Math.Sin(angle[i]);
+                output[0] = orig[0] + length*Math.Cos(angle[0]);
+                output[1] = orig[1] + length*Math.Sin(angle[0]);
             }
-
-            return coord;
+            else if(orig.Length == 3)
+            {
+                output[0] = orig[0] + length*Math.Sin(angle[0])*Math.Cos(angle[1]);
+                output[1] = orig[1] + length*Math.Cos(angle[0]);
+                output[2] = orig[2] + length*Math.Sin(angle[0])*Math.Sin(angle[1]);
+            }
         }
 
         private static double[][] CreateMatrix(int height, int width)
