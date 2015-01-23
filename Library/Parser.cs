@@ -67,16 +67,18 @@ namespace Library
         {
             lock (this)
             {
-                var fileHash = ComputeHash();
-                if (_oldFileHash != null && _oldFileHash.SequenceEqual(fileHash))
-                {
-                    return;
-                }
-                _oldFileHash = fileHash;
-
-                OnReloading(new ReloadingArgs());
                 try
                 {
+                    Thread.Sleep(500);
+
+                    var fileHash = ComputeHash();
+                    if (_oldFileHash != null && _oldFileHash.SequenceEqual(fileHash))
+                    {
+                        return;
+                    }
+                    _oldFileHash = fileHash;
+
+                    OnReloading(new ReloadingArgs());
                     _engine.Execute(File.ReadAllText(_inputFile));
                     OnReloaded(new ReloadedArgs(null));
                 }

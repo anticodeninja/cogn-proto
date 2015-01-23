@@ -45,10 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Primitivies\Edge.cs" />
-    <Compile Include="Primitivies\Figure.cs" />
-    <Compile Include="Primitivies\Matrix.cs" />
-    <Compile Include="Primitivies\Point.cs" />
+    <Compile Include="ReduceTransform.cs" />
     <Compile Include="Render.cs">
       <SubType>Form</SubType>
     </Compile>

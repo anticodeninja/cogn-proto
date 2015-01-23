@@ -1,8 +1,8 @@
-﻿using System;
-using System.Drawing;
-
-namespace Library
+﻿namespace Library.Graphics
 {
+    using System;
+    using System.Drawing;
+
     public class HslColor
     {
         // Private data members below are on scale 0-1

@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Windows.Forms;
     using Library;
+    using Library.Graphics;
 
     public partial class Render : Form
     {

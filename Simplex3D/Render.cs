@@ -7,28 +7,31 @@
     using System.Windows.Forms;
 
     using Library;
-    using Primitives;
+    using Library.Graphics;
+    using Library.Geometry;
 
     public partial class Render : Form
     {
-        private readonly List<Figure> _mainFigures;
+        private readonly List<Figure<Point3D, Matrix3D>> _mainFigures;
 
-        private readonly Matrix _transformMatrix;
-        private readonly Matrix _mouseXMatrix;
-        private readonly Matrix _mouseYMatrix;
-        private readonly Matrix _tempMatrix;
+        private readonly Matrix3D _projectionMatrix;
+        private readonly Matrix3D _transformMatrix;
+        private readonly Matrix3D _mouseXMatrix;
+        private readonly Matrix3D _mouseYMatrix;
 
-        private System.Drawing.Point? _mouseCoord;
+        private Point? _mouseCoord;
 
         public Render(string inputFile)
         {
             InitializeComponent();
 
-            _mainFigures = new List<Figure>();
-            _transformMatrix = new Matrix().IdentMatrix();
-            _mouseXMatrix = new Matrix();
-            _mouseYMatrix = new Matrix();
-            _tempMatrix = new Matrix();
+            _mainFigures = new List<Figure<Point3D, Matrix3D>>();
+            _projectionMatrix = new Matrix3D().IdentMatrix<Matrix3D>().Chain(
+                new Matrix3D().MovementMatrix(0, 0, 800),
+                new Matrix3D().ProjectionMatrix());
+            _transformMatrix = new Matrix3D().IdentMatrix<Matrix3D>();
+            _mouseXMatrix = new Matrix3D();
+            _mouseYMatrix = new Matrix3D();
 
             var parser = new Parser(inputFile);
             InitializeParser(parser);
@@ -42,12 +45,12 @@
         {
             parser.Add("addTetraedron", new Action<string, int, object[], int>(
                 (color, width, pattern, size) => 
-                _mainFigures.Add(Figure.CreateTetrahedron(
+                AddFigure(FigureFactory3D.CreateTetrahedron(
                     size, width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
                 (color, width, pattern, size, point, colors) =>
-                _mainFigures.Add(Figure.CreateIjk(
+                AddFigure(FigureFactory3D.CreateIjk(
                     size, ParseValue(point),
                     width, ColorTranslator.FromHtml(color),
                     colors.Select(c => ColorTranslator.FromHtml((string)c)).ToArray(),
@@ -55,7 +58,7 @@
 
             parser.Add("addVector", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, point) =>
-                _mainFigures.Add(Figure.CreateVector(
+                AddFigure(FigureFactory3D.CreateVector(
                     size, ParseValue(point), width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addPath", new Action<string, int, object[], int, object[]>(
@@ -63,14 +66,14 @@
             {
                 for (var i = 0; i < path.Length - 1; ++i)
                 {
-                    _mainFigures.Add(Figure.CreateLine(size, ParseValue(path[i]), ParseValue(path[i + 1]),
+                    AddFigure(FigureFactory3D.CreateLine(size, ParseValue(path[i]), ParseValue(path[i + 1]),
                         width, ColorTranslator.FromHtml(color), ParsePattern(pattern))); 
                 }
             }));
 
             parser.Add("addPoint", new Action<string, int, string, int, object>(
                 (color, width, pattern, size, point) =>
-                    _mainFigures.Add(Figure.CreatePoint(size, ParseValue(point),
+                    AddFigure(FigureFactory3D.CreateSimplexPoint(size, ParseValue(point),
                         width, ColorTranslator.FromHtml(color), (PointType) Enum.Parse(typeof(PointType), pattern)))));
 
             parser.Add("setViewPort", new Action<double, double>((a1, a2) =>
@@ -78,9 +81,9 @@
                 _mouseXMatrix.RotateMatrixX(a1 * Math.PI / 180);
                 _mouseYMatrix.RotateMatrixY(a2 * Math.PI / 180);
 
-                _transformMatrix.IdentMatrix();
-                Matrix.Multiply(_transformMatrix, _mouseYMatrix, _tempMatrix);
-                Matrix.Multiply(_tempMatrix, _mouseXMatrix, _transformMatrix);
+                _transformMatrix.IdentMatrix<Matrix3D>().Chain(
+                    _mouseYMatrix,
+                    _mouseXMatrix);
             }));
 
             parser.Reloaded += (sender, args) => Invoke(new Action(() =>
@@ -95,6 +98,12 @@
                 }
             }));
             parser.Reloading += (sender, args) => ResetData();
+        }
+
+        private void AddFigure(Figure<Point3D, Matrix3D> figure)
+        {
+            figure.SetProjection(_projectionMatrix);
+            _mainFigures.Add(figure);
         }
 
         private static float[] ParsePattern(IEnumerable<object> array)
@@ -125,7 +134,7 @@
         {
             renderPanel.MouseDown += (sender, args) =>
             {
-                _mouseCoord = new System.Drawing.Point(args.X, args.Y);
+                _mouseCoord = new Point(args.X, args.Y);
             };
             renderPanel.MouseUp += (sender, args) =>
             {
@@ -136,14 +145,16 @@
                 if (_mouseCoord == null)
                     return;
 
-                var mouseDelta = new System.Drawing.Point(args.X - _mouseCoord.Value.X, args.Y - _mouseCoord.Value.Y);
-                _mouseCoord = new System.Drawing.Point(args.X, args.Y);
+                var mouseDelta = new Point(args.X - _mouseCoord.Value.X, args.Y - _mouseCoord.Value.Y);
+                _mouseCoord = new Point(args.X, args.Y);
 
                 const double koef = 0.01;
                 _mouseXMatrix.RotateMatrixX(koef * mouseDelta.Y);
                 _mouseYMatrix.RotateMatrixY(koef * mouseDelta.X);
-                Matrix.Multiply(_transformMatrix, _mouseXMatrix, _tempMatrix);
-                Matrix.Multiply(_tempMatrix, _mouseYMatrix, _transformMatrix);
+
+                _transformMatrix.Chain(
+                    _mouseYMatrix,
+                    _mouseXMatrix);
 
                 renderPanel.Invalidate();
             };

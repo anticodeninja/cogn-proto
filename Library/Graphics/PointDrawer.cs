@@ -1,11 +1,11 @@
-﻿namespace Library
-{
-    using System;
-    using System.Drawing;
+﻿using System;
+using System.Drawing;
 
+namespace Library.Graphics
+{
     public static class PointDrawer
     {
-        public static void DrawPoint(Graphics g, PointType type, Color c, float w, float x, float y)
+        public static void DrawPoint(System.Drawing.Graphics g, PointType type, Color c, float w, float x, float y)
         {
             w = w/2;
 

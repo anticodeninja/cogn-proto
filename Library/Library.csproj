@@ -44,16 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HSLColor.cs" />
+    <Compile Include="Geometry\Edge.cs" />
+    <Compile Include="Geometry\Figure.cs" />
+    <Compile Include="Geometry\FigureFactory.cs" />
+    <Compile Include="Geometry\FigureFactory2D.cs" />
+    <Compile Include="Geometry\FigureFactory3D.cs" />
+    <Compile Include="Geometry\Matrix3D.cs" />
+    <Compile Include="Geometry\Matrix2D.cs" />
+    <Compile Include="Geometry\MatrixAbstract.cs" />
+    <Compile Include="Geometry\PointAbstract.cs" />
+    <Compile Include="Geometry\Point2D.cs" />
+    <Compile Include="Geometry\Point3D.cs" />
+    <Compile Include="Graphics\HSLColor.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="PointDrawer.cs" />
-    <Compile Include="PointType.cs" />
+    <Compile Include="Graphics\PointDrawer.cs" />
+    <Compile Include="Graphics\PointType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Simplex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

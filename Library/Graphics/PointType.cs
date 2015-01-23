@@ -1,4 +1,4 @@
-﻿namespace Library
+﻿namespace Library.Graphics
 {
     public enum PointType
     {
