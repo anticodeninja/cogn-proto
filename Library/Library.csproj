@@ -62,7 +62,9 @@
     <Compile Include="Graphics\PointDrawer.cs" />
     <Compile Include="Graphics\PointType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simplex.cs" />
+    <Compile Include="Transformation\BaseTransformation.cs" />
+    <Compile Include="Transformation\Prism.cs" />
+    <Compile Include="Transformation\Simplex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

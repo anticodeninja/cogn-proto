@@ -1,12 +1,14 @@
-﻿namespace Library
+﻿namespace Library.Transformation
 {
     using System;
     using System.Linq;
 
-    internal class Simplex
+    internal class Simplex : BaseTransformation
     {
-        public static double[] SimplexToCoord(double[] h)
+        public static double[] ToCoord(double size, double[] h)
         {
+            h = Normalize(h, size);
+
             double[][] angle;
 
             switch (h.Length)
@@ -47,8 +49,10 @@
             return coord;
         }
 
-        public static double[][] SimplexToVector(double[] h)
+        public static double[][] ToVector(double size, double[] h)
         {
+            h = Normalize(h, size);
+
             double[][] angle;
 
             switch (h.Length)
@@ -57,7 +61,7 @@
                     angle = new[]
                     {
                         new[] {-Math.PI/3.0},
-                        new[] {-Math.PI}
+                        new[] {Math.PI}
                     };
                     break;
                 case 4:
@@ -89,8 +93,10 @@
             return coord;
         }
 
-        public static double[][] SimplexToMed(double[] h, double[] p)
+        public static double[][] ToMedian(double size, double[] h, double[] p)
         {
+            h = Normalize(h, size);
+
             double[][] angle;
 
             switch (h.Length)
@@ -123,31 +129,6 @@
             }
 
             return coord;
-        }
-
-        private static void Transform(double[] orig, double[] output, double[] angle, double length)
-        {
-            if (orig.Length == 2)
-            {
-                output[0] = orig[0] + length*Math.Cos(angle[0]);
-                output[1] = orig[1] + length*Math.Sin(angle[0]);
-            }
-            else if(orig.Length == 3)
-            {
-                output[0] = orig[0] + length*Math.Sin(angle[0])*Math.Cos(angle[1]);
-                output[1] = orig[1] + length*Math.Cos(angle[0]);
-                output[2] = orig[2] + length*Math.Sin(angle[0])*Math.Sin(angle[1]);
-            }
-        }
-
-        private static double[][] CreateMatrix(int height, int width)
-        {
-            var temp = new double[height][];
-            for (var i = 0; i < height; ++i)
-            {
-                temp[i] = new double[width];
-            }
-            return temp;
         }
     }
 }

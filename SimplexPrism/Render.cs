@@ -43,23 +43,23 @@
 
         private void InitializeParser(Parser parser)
         {
-            parser.Add("addTetraedron", new Action<string, int, object[], int>(
-                (color, width, pattern, size) => 
-                AddFigure(FigureFactory3D.CreateSimplexBody(
-                    size, width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
+            parser.Add("addPrism", new Action<string, int, object[], int, int>(
+                (color, width, pattern, size, length) => 
+                AddFigure(FigureFactory3D.CreatePrismBody(
+                    size, length, width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
-            parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
-                (color, width, pattern, size, point, colors) =>
-                AddFigure(FigureFactory3D.CreateSimplexIjk(
-                    size, ParseValue(point),
+            parser.Add("addIJK", new Action<string, int, object[], int, int, object[], object[]>(
+                (color, width, pattern, size, length, point, colors) =>
+                AddFigure(FigureFactory3D.CreatePrismIjk(
+                    size, length, ParseValue(point),
                     width, ColorTranslator.FromHtml(color),
                     colors.Select(c => ColorTranslator.FromHtml((string)c)).ToArray(),
                     ParsePattern(pattern)))));
 
-            parser.Add("addVector", new Action<string, int, object[], int, object[]>(
-                (color, width, pattern, size, point) =>
-                AddFigure(FigureFactory3D.CreateSimplexVector(
-                    size, ParseValue(point), width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
+            parser.Add("addVector", new Action<string, int, object[], int, int, object[]>(
+                (color, width, pattern, size, length, point) =>
+                AddFigure(FigureFactory3D.CreatePrismVector(
+                    size, length, ParseValue(point), width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addPath", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, path) =>
@@ -71,9 +71,9 @@
                 }
             }));
 
-            parser.Add("addPoint", new Action<string, int, string, int, object>(
-                (color, width, pattern, size, point) =>
-                    AddFigure(FigureFactory3D.CreateSimplexPoint(size, ParseValue(point),
+            parser.Add("addPoint", new Action<string, int, string, int, int, object>(
+                (color, width, pattern, size, length, point) =>
+                    AddFigure(FigureFactory3D.CreatePrismPoint(size, length, ParseValue(point),
                         width, ColorTranslator.FromHtml(color), (PointType) Enum.Parse(typeof(PointType), pattern)))));
 
             parser.Add("setViewPort", new Action<double, double>((a1, a2) =>

@@ -37,12 +37,12 @@
         {
             parser.Add("addTetraedron", new Action<string, int, object[], int>(
                 (color, width, pattern, size) =>
-                AddFigure(()=>FigureFactory2D.CreateTetrahedron(
+                AddFigure(()=>FigureFactory2D.CreateSimplexBody(
                     size, width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
                 (color, width, pattern, size, point, colors) =>
-                    AddFigure((a, c) => FigureFactory2D.CreateIjk(
+                    AddFigure((a, c) => FigureFactory2D.CreateSimplexIjk(
                         size, a,
                         width, ColorTranslator.FromHtml(color),
                         c,
@@ -51,7 +51,7 @@
 
             parser.Add("addVector", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, point) =>
-                    AddFigure(a => FigureFactory2D.CreateVector(
+                    AddFigure(a => FigureFactory2D.CreateSimplexVector(
                         size, a,
                         width, ColorTranslator.FromHtml(color),
                         ParsePattern(pattern)), ParseValue(point))));

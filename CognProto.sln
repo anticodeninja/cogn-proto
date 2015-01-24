@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simplex3D", "Simplex3D\Simp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexRender", "HexRender\HexRender.csproj", "{C53C8A10-7C86-43F9-AEA0-A00D9997F57D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplexPrism", "SimplexPrism\SimplexPrism.csproj", "{8FDE5840-DAEC-4AC3-A0FB-09FC3F61599B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C53C8A10-7C86-43F9-AEA0-A00D9997F57D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C53C8A10-7C86-43F9-AEA0-A00D9997F57D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C53C8A10-7C86-43F9-AEA0-A00D9997F57D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FDE5840-DAEC-4AC3-A0FB-09FC3F61599B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FDE5840-DAEC-4AC3-A0FB-09FC3F61599B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FDE5840-DAEC-4AC3-A0FB-09FC3F61599B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FDE5840-DAEC-4AC3-A0FB-09FC3F61599B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

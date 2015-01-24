@@ -57,8 +57,6 @@
                         new[] {c[3], c[0], c[2]}
                     };
                 case 2:
-                    //Func<Color, Color, Color> combine = (c1, c2) => 
-                    //    Color.FromArgb((c1.R + c2.R) / 2, (c1.G + c2.G) / 2, (c1.B + c2.B) / 2);
                     Func<Color, Color, Color> combine = (c1, c2) => ColorMix.Mix(c1, c2);
                     return new[]{
                         new []{combine(c[0], c[1]), c[2], c[3]},
