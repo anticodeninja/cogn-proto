@@ -9,6 +9,7 @@
     using Library;
     using Library.Graphics;
     using Library.Geometry;
+    using Library.Transformation;
 
     public partial class Render : Form
     {
@@ -45,35 +46,29 @@
         {
             parser.Add("addTetraedron", new Action<string, int, object[], int>(
                 (color, width, pattern, size) => 
-                AddFigure(FigureFactory3D.CreateSimplexBody(
-                    size, width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
+                AddFigure(FigureFactory3D.CreateSimplexBody(size,
+                    width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
                 (color, width, pattern, size, point, colors) =>
-                AddFigure(FigureFactory3D.CreateSimplexIjk(
-                    size, ParseValue(point),
+                AddFigure(FigureFactory3D.CreateIjk(Simplex.ToMedian(size, ParseValue(point)),
                     width, ColorTranslator.FromHtml(color),
                     colors.Select(c => ColorTranslator.FromHtml((string)c)).ToArray(),
                     ParsePattern(pattern)))));
 
             parser.Add("addVector", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, point) =>
-                AddFigure(FigureFactory3D.CreateSimplexVector(
-                    size, ParseValue(point), width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
+                AddFigure(FigureFactory3D.CreateVector(Simplex.ToVector(size, ParseValue(point)),
+                    width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addPath", new Action<string, int, object[], int, object[]>(
-                (color, width, pattern, size, path) =>
-            {
-                for (var i = 0; i < path.Length - 1; ++i)
-                {
-                    AddFigure(FigureFactory3D.CreateLine(size, ParseValue(path[i]), ParseValue(path[i + 1]),
-                        width, ColorTranslator.FromHtml(color), ParsePattern(pattern))); 
-                }
-            }));
+                (color, width, pattern, size, path) => AddFigure(FigureFactory3D.CreateVector(
+                    path.Select(c=>Simplex.ToPoint(size, ParseValue(c))).ToArray(),
+                    width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addPoint", new Action<string, int, string, int, object>(
                 (color, width, pattern, size, point) =>
-                    AddFigure(FigureFactory3D.CreateSimplexPoint(size, ParseValue(point),
+                    AddFigure(FigureFactory3D.CreatePoint(Simplex.ToPoint(size, ParseValue(point)),
                         width, ColorTranslator.FromHtml(color), (PointType) Enum.Parse(typeof(PointType), pattern)))));
 
             parser.Add("setViewPort", new Action<double, double>((a1, a2) =>

@@ -1,6 +1,5 @@
 ﻿namespace Library.Geometry
 {
-    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
@@ -25,7 +24,7 @@
 
             for (var i = 0; i <= dimension; ++i)
             {
-                vertexes.Add(new TPoint().Set<TPoint>(Simplex.ToCoord(size,
+                vertexes.Add(new TPoint().Set<TPoint>(Simplex.ToPoint(size,
                     Enumerable.Range(0, dimension+1).Select(a=>a==i ? 1.0 : 0.0).ToArray())));
             }
 
@@ -51,13 +50,16 @@
 
             var dimension = new TPoint().Dimension;
             var vertexes = new List<TPoint>();
+            var bound = new double[dimension + 1];
 
             for (var i = 0; i < dimension; ++i)
             {
-                vertexes.Add(new TPoint().Set<TPoint>(Prism.ToCoord(size, length,
-                    Enumerable.Range(0, dimension + 1).Select(a => ((a != 0 && a == (i + 1)) ? 1.0 : 0.0)).ToArray())));
-                vertexes.Add(new TPoint().Set<TPoint>(Prism.ToCoord(size, length,
-                    Enumerable.Range(0, dimension + 1).Select(a => ((a == 0 || a == (i + 1)) ? 1.0 : 0.0)).ToArray())));
+                bound[i + 1] = 1.0;
+                bound[0] = 0.0;
+                vertexes.Add(new TPoint().Set<TPoint>(Prism.ToPoint(size, length, bound)));
+                bound[0] = 1.0;
+                vertexes.Add(new TPoint().Set<TPoint>(Prism.ToPoint(size, length, bound)));
+                bound[i + 1] = 0.0;
             }
 
             for (var i = 0; i < dimension; ++i)
@@ -77,8 +79,8 @@
             return temp;
         }
 
-        public static Figure<TPoint, TMatrix> CreateSimplexIjk(
-            double size, double[] h, double width, Color color, Color[] colors, float[] dashPattern)
+        public static Figure<TPoint, TMatrix> CreateIjk(
+            double[][] c, double width, Color color, Color[] colors, float[] dashPattern)
         {
             var temp = new Figure<TPoint, TMatrix>
             {
@@ -86,21 +88,18 @@
                 DashPattern = dashPattern
             };
 
-            var vertex = Simplex.ToCoord(size, h);
-            var vertex2 = Simplex.ToMedian(size, h, vertex);
-
-            var cVertex = new TPoint().Set<TPoint>(vertex);
-            for (var i = 0; i < h.Length; ++i)
+            var pVertex0 = new TPoint().Set<TPoint>(c[0]);
+            for (var i = 0; i < c.Length-1; ++i)
             {
-                temp.AddEdge(new[] { cVertex, new TPoint().Set<TPoint>(vertex2[i])}, colors[i]);
+                temp.AddEdge(new[] {pVertex0, new TPoint().Set<TPoint>(c[i + 1])}, colors[i]);
             }
 
-            temp.AddEdge(new[] { cVertex, cVertex }, color);
+            temp.AddEdge(new[] { pVertex0, pVertex0 }, color);
             return temp;
         }
 
-        public static Figure<TPoint, TMatrix> CreatePrismIjk(
-            double size, double length, double[] h, double width, Color color, Color[] colors, float[] dashPattern)
+        public static Figure<TPoint, TMatrix> CreateVector(
+            double[][] c, double width, Color color, float[] dashPattern)
         {
             var temp = new Figure<TPoint, TMatrix>
             {
@@ -108,71 +107,15 @@
                 DashPattern = dashPattern
             };
 
-            var vertex = Prism.ToCoord(size, length, h);
-            var vertex2 = Prism.ToMedian(size, length, h, vertex);
-
-            var cVertex = new TPoint().Set<TPoint>(vertex);
-            for (var i = 0; i < h.Length; ++i)
+            var cVertex1 = new TPoint().Set<TPoint>(c[0]);
+            for (var i = 1; i < c.Length; ++i)
             {
-                temp.AddEdge(new[] { cVertex, new TPoint().Set<TPoint>(vertex2[i])}, colors[i]);
-            }
-
-            temp.AddEdge(new[] { cVertex, cVertex }, color);
-            return temp;
-        }
-
-        public static Figure<TPoint, TMatrix> CreateSimplexVector(
-            double size, double[] h, double width, Color color, float[] dashPattern)
-        {
-            var temp = new Figure<TPoint, TMatrix>
-            {
-                Width = width,
-                DashPattern = dashPattern
-            };
-
-            var vertex = Simplex.ToVector(size, h);
-            var cVertex1 = new TPoint().Set<TPoint>(vertex[0]);
-            for (var i = 1; i < h.Length; ++i)
-            {
-                var cVertex2 = new TPoint().Set<TPoint>(vertex[i]);
+                var cVertex2 = new TPoint().Set<TPoint>(c[i]);
                 temp.AddEdge(new[] { cVertex1, cVertex2 }, color);
                 cVertex1 = cVertex2;
             }
 
             return temp;
-        }
-
-        public static Figure<TPoint, TMatrix> CreatePrismVector(
-            double size, double length, double[] h, double width, Color color, float[] dashPattern)
-        {
-            var temp = new Figure<TPoint, TMatrix>
-            {
-                Width = width,
-                DashPattern = dashPattern
-            };
-
-            var vertex = Prism.ToVector(size, length, h);
-            var cVertex1 = new TPoint().Set<TPoint>(vertex[0]);
-            for (var i = 1; i < h.Length; ++i)
-            {
-                var cVertex2 = new TPoint().Set<TPoint>(vertex[i]);
-                temp.AddEdge(new[] { cVertex1, cVertex2 }, color);
-                cVertex1 = cVertex2;
-            }
-
-            return temp;
-        }
-
-        public static Figure<TPoint, TMatrix> CreateSimplexPoint(
-            double size, double[] h, double width, Color color, PointType pointType)
-        {
-            return CreatePoint(Simplex.ToCoord(size, h), width, color, pointType);
-        }
-
-        public static Figure<TPoint, TMatrix> CreatePrismPoint(
-            double size, double length, double[] h, double width, Color color, PointType pointType)
-        {
-            return CreatePoint(Prism.ToCoord(size, length, h), width, color, pointType);
         }
 
         public static Figure<TPoint, TMatrix> CreatePoint(
@@ -186,24 +129,6 @@
 
             var vertex = new TPoint().Set<TPoint>(c);
             temp.AddEdge(new[] {vertex, vertex}, color);
-
-            return temp;
-        }
-
-        public static Figure<TPoint, TMatrix> CreateLine(
-            double size, double[] h1, double[] h2, double width, Color color, float[] dashPattern)
-        {
-            var temp = new Figure<TPoint, TMatrix>
-            {
-                Width = width,
-                DashPattern = dashPattern
-            };
-
-            temp.AddEdge(new[]
-            {
-                new TPoint().Set<TPoint>(Simplex.ToCoord(size, h1)),
-                new TPoint().Set<TPoint>(Simplex.ToCoord(size, h2))
-            }, color);
 
             return temp;
         }

@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
 
-    class BaseTransformation
+    public class BaseTransformation
     {
         protected static double[] Normalize(double[] coords, double length)
         {

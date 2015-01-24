@@ -9,6 +9,7 @@
     using Library;
     using Library.Graphics;
     using Library.Geometry;
+    using Library.Transformation;
 
     public partial class Render : Form
     {
@@ -50,30 +51,24 @@
 
             parser.Add("addIJK", new Action<string, int, object[], int, int, object[], object[]>(
                 (color, width, pattern, size, length, point, colors) =>
-                AddFigure(FigureFactory3D.CreatePrismIjk(
-                    size, length, ParseValue(point),
+                AddFigure(FigureFactory3D.CreateIjk(Prism.ToMedian(size, length, ParseValue(point)),
                     width, ColorTranslator.FromHtml(color),
                     colors.Select(c => ColorTranslator.FromHtml((string)c)).ToArray(),
                     ParsePattern(pattern)))));
 
             parser.Add("addVector", new Action<string, int, object[], int, int, object[]>(
                 (color, width, pattern, size, length, point) =>
-                AddFigure(FigureFactory3D.CreatePrismVector(
-                    size, length, ParseValue(point), width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
+                AddFigure(FigureFactory3D.CreateVector(Prism.ToVector(size, length, ParseValue(point)),
+                width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
-            parser.Add("addPath", new Action<string, int, object[], int, object[]>(
-                (color, width, pattern, size, path) =>
-            {
-                for (var i = 0; i < path.Length - 1; ++i)
-                {
-                    AddFigure(FigureFactory3D.CreateLine(size, ParseValue(path[i]), ParseValue(path[i + 1]),
-                        width, ColorTranslator.FromHtml(color), ParsePattern(pattern))); 
-                }
-            }));
+            parser.Add("addPath", new Action<string, int, object[], int, int, object[]>(
+                (color, width, pattern, size, length, path) => AddFigure(FigureFactory3D.CreateVector(
+                    path.Select(c=>Prism.ToPoint(size, length, ParseValue(c))).ToArray(),
+                    width, ColorTranslator.FromHtml(color), ParsePattern(pattern)))));
 
             parser.Add("addPoint", new Action<string, int, string, int, int, object>(
                 (color, width, pattern, size, length, point) =>
-                    AddFigure(FigureFactory3D.CreatePrismPoint(size, length, ParseValue(point),
+                    AddFigure(FigureFactory3D.CreatePoint(Prism.ToPoint(size, length, ParseValue(point)),
                         width, ColorTranslator.FromHtml(color), (PointType) Enum.Parse(typeof(PointType), pattern)))));
 
             parser.Add("setViewPort", new Action<double, double>((a1, a2) =>

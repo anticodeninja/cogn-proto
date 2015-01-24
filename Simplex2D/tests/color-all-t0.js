@@ -1,5 +1,5 @@
 ﻿setView(0);
-setTransform(2);
+setTransform(0);
 
 var size = 200,
     color = "#000",
@@ -8,6 +8,12 @@ var size = 200,
 
 addTetraedron(color, 3, dashPattern, size);
 
+addPath(color, 4, dashPattern, size, [
+    [0, 10, 10, 10],
+    [10, 0, 10, 10],
+    [10, 10, 0, 10],
+    [10, 10, 10, 0]
+]);
 addIJK(color, 2, dashPattern, size, [30, 30, 15, 60], colors);
 addVector(color, 6, dashPattern, size, [30, 30, 15, 60]);
 addPoint(color, 12, "Circle", size, [30, 30, 15, 60]);

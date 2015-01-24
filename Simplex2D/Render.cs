@@ -9,12 +9,13 @@
     using Library;
     using Library.Geometry;
     using Library.Graphics;
+    using Library.Transformation;
 
     public partial class Render : Form
     {
         private readonly List<Figure<Point2D, Matrix2D>[]> _mainFigures;
         private readonly Matrix2D[] _matrices;
-        private ReduceTransform _transform;
+        private readonly ReduceTransform _transform;
 
         public Render(string inputFile)
         {
@@ -42,8 +43,7 @@
 
             parser.Add("addIJK", new Action<string, int, object[], int, object[], object[]>(
                 (color, width, pattern, size, point, colors) =>
-                    AddFigure((a, c) => FigureFactory2D.CreateSimplexIjk(
-                        size, a,
+                    AddFigure((a, c) => FigureFactory2D.CreateIjk(Simplex.ToMedian(size, a),
                         width, ColorTranslator.FromHtml(color),
                         c,
                         ParsePattern(pattern)), ParseValue(point),
@@ -51,27 +51,20 @@
 
             parser.Add("addVector", new Action<string, int, object[], int, object[]>(
                 (color, width, pattern, size, point) =>
-                    AddFigure(a => FigureFactory2D.CreateSimplexVector(
-                        size, a,
+                    AddFigure(a => FigureFactory2D.CreateVector(Simplex.ToVector(size, a),
                         width, ColorTranslator.FromHtml(color),
                         ParsePattern(pattern)), ParseValue(point))));
 
             parser.Add("addPath", new Action<string, int, object[], int, object[]>(
-                (color, width, pattern, size, path) =>
-                {
-                    for (var i = 0; i < path.Length - 1; ++i)
-                    {
-                        AddFigure((a1, a2)=>FigureFactory2D.CreateLine(
-                            size, a1, a2,
-                            width, ColorTranslator.FromHtml(color),
-                            ParsePattern(pattern)), ParseValue(path[i]), ParseValue(path[i + 1]));
-                    }
-                }));
+                (color, width, pattern, size, path) => 
+                    AddFigure(a=>FigureFactory2D.CreateVector(
+                        a.Select(c=>Simplex.ToPoint(size, c)).ToArray(),
+                        width, ColorTranslator.FromHtml(color),
+                        ParsePattern(pattern)), path.Select(ParseValue).ToArray())));
 
             parser.Add("addPoint", new Action<string, int, string, int, object[]>(
                 (color, width, pattern, size, point) =>
-                    AddFigure(a=>FigureFactory2D.CreateSimplexPoint(
-                        size, a,
+                    AddFigure(a=>FigureFactory2D.CreatePoint(Simplex.ToPoint(size, a),
                         width, ColorTranslator.FromHtml(color),
                         (PointType)Enum.Parse(typeof(PointType), pattern)),ParseValue(point))));
 
@@ -131,11 +124,15 @@
             _mainFigures.Add(Enumerable.Range(0, 4).Select(a=>create(transformed[a], colors[a])).ToArray());
         }
 
-        private void AddFigure(Func<double[], double[], Figure<Point2D, Matrix2D>> create, double[] h1, double[] h2)
+        private void AddFigure(Func<double[][], Figure<Point2D, Matrix2D>> create, double[][] h)
         {
-            var transformed1 = _transform.Transform(h1);
-            var transformed2 = _transform.Transform(h2);
-            _mainFigures.Add(Enumerable.Range(0, 4).Select(a=>create(transformed1[a], transformed2[a])).ToArray());
+            var transformed = new double[h.Length][][];
+            for (var i = 0; i < h.Length; ++i)
+            {
+                transformed[i] = _transform.Transform(h[i]);
+            }
+            _mainFigures.Add(Enumerable.Range(0, 4).Select(
+                a => create(Enumerable.Range(0, h.Length).Select(b => transformed[a][b]).ToArray())).ToArray());
         }
 
         private void ResetData()

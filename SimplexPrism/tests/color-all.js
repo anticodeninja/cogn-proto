@@ -7,7 +7,13 @@ var size = 100,
     dashPattern = [1];
 
 addPrism(color, 3, dashPattern, size, length);
-addIJK(color, 2, dashPattern, size, length, [0.6, 30, 15, 60], colors);
 
+addPath(color, 4, dashPattern, size, length, [
+    [0, 10, 10, 10],
+    [0.5, 0, 10, 10],
+    [0.5, 10, 0, 10],
+    [0.5, 10, 10, 0]
+]);
+addIJK(color, 2, dashPattern, size, length, [0.6, 30, 15, 60], colors);
 addVector(color, 6, dashPattern, size, length, [0.6, 30, 15, 60]);
 addPoint(color, 12, "Circle", size, length, [0.6, 30, 15, 60]);
