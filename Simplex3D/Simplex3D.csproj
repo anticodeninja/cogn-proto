@@ -98,8 +98,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)tests/*" "$(TargetDir)" /E /I /F /Y
-copy "$(TargetDir)/color-all.js" "$(TargetDir)/default.js"  /Y</PostBuildEvent>
+    <PostBuildEvent>robocopy $(ProjectDir)tests\ $(TargetDir) /e /xc /xn /xo
+If NOT exist "$(TargetDir)default.js" (
+   copy /y "$(ProjectDir)tests\color-all.js" "$(TargetDir)default.js"
+)
+Exit 0</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
