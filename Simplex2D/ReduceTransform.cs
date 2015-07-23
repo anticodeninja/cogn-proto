@@ -8,64 +8,50 @@
     {
         public int Type { get; set; }
 
-        public double[][] Transform(double[] h)
+        private T[][] TransformInternal<T>(T[] k, T def, Func<T, T, T> combine)
         {
             switch (Type)
             {
                 case 0:
                     return new[] {
-                        new []{h[3], h[0], h[2]},
-                        new []{h[3], h[2], h[1]},
-                        new []{h[0], h[1], h[2]},
-                        new []{h[0], h[1], h[3]}
+                        new []{k[3], k[0], k[1]},
+                        new []{k[3], k[1], k[2]},
+                        new []{k[0], k[2], k[1]},
+                        new []{k[3], k[2], k[0]}
                     };
                 case 1:
                     return new[] {
-                        new[] {h[0], h[1], h[2]},
-                        new[] {0.0, 0.0, 0.0},
-                        new[] {h[3], h[1], h[0]},
-                        new[] {h[3], h[0], h[2]}
+                        new[] {k[0], k[2], k[3]},
+                        new[] {def, def, def},
+                        new[] {k[1], k[2], k[0]},
+                        new[] {k[1], k[0], k[3]}
                     };
                 case 2:
-                    Func<double, double, double> combine = (d1, d2) => d1 + d2;
                     return new[]{
-                        new []{combine(h[0], h[1]), h[2], h[3]},
-                        new []{combine(h[0], h[1]), combine(h[0], h[3]), combine(h[0], h[2])},
-                        new []{h[1], h[2], combine(h[0], h[3])},
-                        new []{h[1], combine(h[0], h[2]), h[3]}
+                        new []{k[0], k[1], k[2]},
+                        new []{k[3], k[1], k[2]},
+                        new []{k[2], k[3], k[0]},
+                        new []{k[1], k[0], k[3]},
+                    };
+                case 3:
+                    return new[]{
+                        new[] {k[0], k[2], k[3]},
+                        new[] {k[1], k[2], k[3]},
+                        new[] {k[1], k[2], k[0]},
+                        new[] {k[1], k[0], k[3]} 
                     };
             }
             return null;
         }
 
+        public double[][] Transform(double[] h)
+        {
+            return TransformInternal(h, 0.0, (d1, d2) => d1 + d2);
+        }
+
         public Color[][] Transform(Color[] c)
         {
-            switch (Type)
-            {
-                case 0:
-                    return new[] {
-                        new []{c[3], c[0], c[2]},
-                        new []{c[3], c[2], c[1]},
-                        new []{c[0], c[1], c[2]},
-                        new []{c[0], c[1], c[3]}
-                    };
-                case 1:
-                    return new[] {
-                        new[] {c[0], c[1], c[2]},
-                        new[] {Color.Black, Color.Black, Color.Black},
-                        new[] {c[3], c[1], c[0]},
-                        new[] {c[3], c[0], c[2]}
-                    };
-                case 2:
-                    Func<Color, Color, Color> combine = (c1, c2) => ColorMix.Mix(c1, c2);
-                    return new[]{
-                        new []{combine(c[0], c[1]), c[2], c[3]},
-                        new []{combine(c[0], c[1]), combine(c[0], c[3]), combine(c[0], c[2])},
-                        new []{c[1], c[2], combine(c[0], c[3])},
-                        new []{c[1], combine(c[0], c[2]), c[3]}
-                    };
-            }
-            return null;
+            return TransformInternal(c, Color.Black, (c1, c2) => ColorMix.Mix(c1, c2));
         }
     }
 }

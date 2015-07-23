@@ -132,7 +132,7 @@
                 transformed[i] = _transform.Transform(h[i]);
             }
             _mainFigures.Add(Enumerable.Range(0, 4).Select(
-                a => create(Enumerable.Range(0, h.Length).Select(b => transformed[a][b]).ToArray())).ToArray());
+                a => create(Enumerable.Range(0, h.Length).Select(b => transformed[b][a]).ToArray())).ToArray());
         }
 
         private void ResetData()
