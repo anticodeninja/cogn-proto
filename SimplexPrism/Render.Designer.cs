@@ -33,6 +33,7 @@
             // 
             // renderPanel
             // 
+            this.renderPanel.BackColor = System.Drawing.SystemColors.Window;
             this.renderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderPanel.Location = new System.Drawing.Point(0, 0);
             this.renderPanel.Name = "renderPanel";
