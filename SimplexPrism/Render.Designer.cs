@@ -49,7 +49,7 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Render";
-            this.Text = "Simplex3D";
+            this.Text = "SimplexPrism";
             this.ResumeLayout(false);
 
         }
